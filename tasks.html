@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <title>Tareas</title>
+        <link rel="icon" href="IMG/images.png"> <!-- ICONO DE PESTAÑA -->
+        <link rel="shortcut icon" href="data:image/x-icon;," type="image/x-icon"> 
+        <link rel="stylesheet" type="text/css" href="tasks.css">
+
+        <!-- Estilos para datatables -->
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.2.0/css/bootstrap.min.css">
+        <link rel="stylesheet" href="https://cdn.datatables.net/1.12.1/css/dataTables.bootstrap5.min.css">
+        <!-- Estilos para datatables -->
+
+    </head>
+</head>
+<body>
+    <div id="contenedor_principal">
+        <div>    
+            <br><div class = "contenedor" style="text-align:center"><img src="IMG/images.png" width="13%"/></div>
+            <div class = "contenedor" style="text-align:right;">
+                <p style="text-align: center; color: #004B87; font-weight: bold; font-size: 55px; ">TAREAS</p>
+            </div>
+        </div>
+<!--Inicia modal para agregar tarea /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////-->
+
+<div class="modal" id="modal_formulario_nueva_tarea" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true" data-bs-backdrop="static">
+    <div class="modal-dialog" style="max-width:30%;">
+        <div class="modal-content" style="padding: 0% 2%" >
+
+            <div class="modal-header" style="text-align: right;">
+                <h4 style="color: #004B87">REGISTRO DE NUEVA TAREA</h4>
+            </div>
+
+            <div class="modal-body">
+
+                <div class="row">
+                    <div class="col-md-12">
+                        <label for="titulo"><span style="color:red;">*</span><b>Título: </b></label>
+                        <input type="text" id="titulo" name="titulo" style="width: 100%" placeholder="Título de la tarea...">
+                    </div>
+                </div>
+                <br>
+                <div class="row">
+                    <div class="col-md-12">
+                        <label for="descripcion"><span style="color:red;">*</span><b>Descripción: </b></label>
+                        <textarea id="descripcion" name="descripcion" style="width: 100%" rows="3" placeholder="Descripción de la tarea..."></textarea>
+                    </div>
+                </div>
+                <br>
+                <div class="row">
+                    <div class="col-md-12">
+                        <label for="estado"><span style="color:red;">*</span><b>Estado: </b></label><br>
+                        <select name="estado" id="estado" style="width: 100%">
+                            <option value="Pendiente" selected>Pendiente</option>
+                            <option value="En progreso">En progreso</option>
+                            <option value="Completado">Completado</option>
+                        </select>
+                    </div>
+                </div>
+                <br>
+                <label><span style="color:red;"><b>*Los campos marcados son obligatorios</b></span></label>
+                <br>
+
+            </div>
+
+            <div class="modal-footer" id="botones_modal" style="display: block;">
+                <button type="button" style="float: right" class="btn btn-primary" onclick="guardar_tarea()">Guardar</button>
+                <button type="button" style="float: right" class="btn btn-danger" onclick="cerrar_modal_tarea()">Cancelar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!--Termina modal para agregar tarea ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////-->
+
+
+<!-- Modal para editar el estado de la tarea -->
+<div class="modal" id="modal_editar_estado" tabindex="-1" aria-labelledby="modalEditarEstadoLabel" aria-hidden="true" data-bs-backdrop="static">
+    <div class="modal-dialog" style="max-width:30%;">
+        <div class="modal-content" style="padding: 0% 2%" >
+
+            <div class="modal-header">
+                <h4 style="color: #004B87">EDITAR ESTADO DE LA TAREA</h4>
+            </div>
+
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-md-12">
+                        <label for="nuevo_estado"><span style="color:red;">*</span><b>Nuevo Estado: </b></label>
+                        <select id="nuevo_estado" name="nuevo_estado" style="width: 100%">
+                            <option value="Pendiente">Pendiente</option>
+                            <option value="En Proceso">En Proceso</option>
+                            <option value="Completada">Completada</option>
+                        </select>
+                    </div>
+                </div>
+                <input type="hidden" id="id_tarea_editar">
+            </div>
+
+            <div class="modal-footer" style="display: block;">
+                <button type="button" style="float: right" class="btn btn-primary" onclick="guardarCambiosEstado()">Guardar</button>
+                <button type="button" style="float: right" class="btn btn-danger" onclick="cerrarModalEditarEstado()">Cancelar</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Termina Modal para editar el estado de la tarea -->
+
+
+        <div class="contenedor">
+            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modal_formulario_nueva_tarea" id="agregar_nueva_tarea">Agregar Tarea</button>
+        </div>
+        
+        <br>
+
+        <!-- TABLE -->
+        <div class="contenedor">  
+            <br>
+            <table id="tabla_tareas_dt" class="table table-hover table-striped" style="text-align: center">
+                <thead>
+                    <tr>
+                        <th id="th" class="hfijo" scope="col">ID TAREA</th>
+                        <th id="th" class="hfijo" scope="col">TÍTULO</th>
+                        <th id="th" class="hfijo" scope="col">DESCRIPCIÓN</th>
+                        <th id="th" class="hfijo" scope="col">ESTADO</th>
+                        <th id="th" class="hfijo" scope="col">EDITAR</th>
+                        <th id="th" class="hfijo" scope="col">ELIMINAR</th>
+                    </tr>
+                </thead>
+                <tbody id="tabla_tareas"></tbody>
+            </table>  
+        </div>
+
+    </div>  
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-kQtW33rZJAHjgefvhyyzcGF3C5TFyBQBA13V1RKPf4uH+bwyzQxZ6CmMZHmNBEfJ" crossorigin="anonymous"></script>
+    <script src="http://cdnjs.cloudflare.com/ajax/libs/gsap/1.18.0/TweenMax.min.js"></script>    
+    <script src='https://code.jquery.com/jquery-3.5.1.min.js'></script>
+    <script src="https://kit.fontawesome.com/0a80424f62.js" crossorigin="anonymous"></script>
+    <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <!-- scripts personalizados -->
+    <script src="/tasks.js"></script>
+    <!-- scripts personalizados -->
+
+    <!-- scripts para datatables -->
+    <script src="https://cdn.datatables.net/1.12.1/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.12.1/js/dataTables.bootstrap5.min.js"></script>
+    <!-- scripts para datatables -->
+ 
+    
+</body>
+</html>
